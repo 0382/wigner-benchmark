@@ -1,4 +1,4 @@
 # wigner-benchmark
 
-Benchmark some library of wigner symbols.
+Benchmark some librarys of wigner symbols.
 

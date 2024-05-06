@@ -62,9 +62,9 @@ void pf_simplity(pf_rational_t *s, pf_rational_t *r, pf_rational_t *x)
 
 void sqrt_rational_init(sqrt_rational_t *x)
 {
-    __gmpz_init_set_ui(x->sn, 1);
-    __gmpz_init_set_ui(x->rn, 1);
+    __gmpz_init_set_ui(x->sn, 0);
     __gmpz_init_set_ui(x->sd, 1);
+    __gmpz_init_set_ui(x->rn, 1);
     __gmpz_init_set_ui(x->rd, 1);
 }
 
@@ -80,17 +80,7 @@ void print_sqrt_rational(sqrt_rational_t *x) { __gmp_printf("%Zd/%Zd√(%Zd/%Zd)
 
 double sqrt_rational_to_double(sqrt_rational_t *x)
 {
-    mpq_t s, r;
-    __gmpq_init(s);
-    __gmpq_init(r);
-    __gmpq_set_num(s, x->sn);
-    __gmpq_set_den(s, x->sd);
-    __gmpq_set_num(r, x->rn);
-    __gmpq_set_den(r, x->rd);
-    double ans = __gmpq_get_d(s) * sqrt(__gmpq_get_d(r));
-    __gmpq_clear(s);
-    __gmpq_clear(r);
-    return ans;
+    return __gmpz_get_d(x->sn) / __gmpz_get_d(x->sd) * sqrt(__gmpz_get_d(x->rn) / __gmpz_get_d(x->rd));
 }
 
 sqrt_rational_t pf_CG(int dj1, int dj2, int dj3, int dm1, int dm2, int dm3)
@@ -144,6 +134,15 @@ sqrt_rational_t pf_CG(int dj1, int dj2, int dj3, int dm1, int dm2, int dm3)
     mpz_t B;
     __gmpz_init(B);
     stagger_sum(B, cf, Bs, Bs_size);
+    if (__gmpz_cmp_ui(B, 0) == 0)
+    {
+        __gmpz_clear(B);
+        pf_free(A);
+        pf_free(t);
+        pf_free(Bs);
+        pf_free(cf);
+        return ans;
+    }
     extract_to(cf, B);
     pf_rational_t *s = pf_init_max(J + 1);
     pf_rational_t *r = pf_init_max(J + 1);
@@ -172,5 +171,16 @@ sqrt_rational_t pf_CG(int dj1, int dj2, int dj3, int dm1, int dm2, int dm3)
     pf_free(s);
     pf_free(r);
     pf_free(g);
+    return ans;
+}
+
+sqrt_rational_t pf_3j(int dj1, int dj2, int dj3, int dm1, int dm2, int dm3)
+{
+    sqrt_rational_t ans = pf_CG(dj1, dj2, dj3, -dm1, -dm2, dm3);
+    if (isodd((dj3 + dm3) / 2 + dj1))
+    {
+        __gmpz_neg(ans.sn, ans.sn);
+    }
+    __gmpz_mul_ui(ans.rd, ans.rd, dj3 + 1);
     return ans;
 }

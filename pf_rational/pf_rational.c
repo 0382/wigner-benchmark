@@ -25,7 +25,6 @@ pf_rational_t **pf_integers = NULL;
 
 int upper_bound_primes_u16(uint16_t n)
 {
-    assert(pf_integers != NULL);
     int l = 0, r = U16_PRIME_NUMBER - 1;
     while (l < r)
     {
