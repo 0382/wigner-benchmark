@@ -83,7 +83,7 @@ void bench_3j_gsl(bench_stat_t *report, int N)
 int main()
 {
     pf_init_integers(1000);
-    constexpr int N = 100;
+    constexpr int N = 10;
     bench_stat_t reports[N];
     bench_3j_gsl(reports, N);
     std::printf("%3s %18s %18s %18s\n", "i", "mean", "std_dev", "max");
@@ -93,6 +93,9 @@ int main()
         reports[i].std_dev = sqrt(reports[i].sum_diff2 / reports[i].count);
         std::printf("%3d %18.6g %18.6g %18.6g\n", i, reports[i].mean_diff, reports[i].std_dev, reports[i].max_diff);
     }
+    sqrt_rational_t x = pf_CG(2 * 100, 2 * 300, 2 * 285, 2 * 2, 2 * -2, 0);
+    print_sqrt_rational(&x);
+    sqrt_rational_clear(&x);
     pf_free_integers();
     return 0;
 }

@@ -90,18 +90,18 @@ pf_rational_t **pf_range_u16(uint16_t n)
     return r;
 }
 
-pf_rational_t *pf_init(int size)
+pf_rational_t *pf_alloc(int size)
 {
     pf_rational_t *r = malloc(sizeof(pf_rational_t) + size * sizeof(int16_t));
-    CHECK(r != NULL, "could not allocate memory for pf_init()");
+    CHECK(r != NULL, "could not allocate memory for pf_alloc()");
     r->size = size;
     return r;
 }
 
-pf_rational_t *pf_init_vec(int size, int num)
+pf_rational_t *pf_alloc_vec(int size, int num)
 {
     pf_rational_t *r = malloc(num * (sizeof(pf_rational_t) + size * sizeof(int16_t)));
-    CHECK(r != NULL, "could not allocate memory for pf_init_vec()");
+    CHECK(r != NULL, "could not allocate memory for pf_alloc_vec()");
     pf_rational_t *p = r;
     for (int i = 0; i < num; ++i)
     {
@@ -110,6 +110,8 @@ pf_rational_t *pf_init_vec(int size, int num)
     }
     return r;
 }
+
+void pf_set_one(pf_rational_t *r) { memset(r->data, 0, r->size * sizeof(int16_t)); }
 
 void pf_free(pf_rational_t *r) { free(r); }
 
@@ -137,22 +139,22 @@ pf_rational_t *pf_from_u16(uint16_t n)
         }
         ++i;
     }
-    pf_rational_t *r = pf_init(i);
+    pf_rational_t *r = pf_alloc(i);
     memcpy(r->data, data, i * sizeof(int16_t));
     free(data);
     return r;
 }
 
-pf_rational_t *pf_init_max(int max_integer)
+pf_rational_t *pf_alloc_max(int max_integer)
 {
     int size = upper_bound_primes_u16(max_integer);
-    return pf_init(size);
+    return pf_alloc(size);
 }
 
-pf_rational_t *pf_init_max_vec(int max_integer, int num)
+pf_rational_t *pf_alloc_max_vec(int max_integer, int num)
 {
     int size = upper_bound_primes_u16(max_integer);
-    return pf_init_vec(size, num);
+    return pf_alloc_vec(size, num);
 }
 
 void pf_numerator(mpz_t n, pf_rational_t *r)
@@ -314,7 +316,7 @@ void pf_binomial(pf_rational_t *r, int n, int k)
 {
     CHECK((unsigned)n <= (unsigned)pf_integer_number, "pf_binomial() requires 0 <= n <= pf_integer_number");
     CHECK((unsigned)k <= (unsigned)n, "pf_binomial() requires 0 <= k <= n");
-    memset(r->data, 0, r->size * sizeof(int16_t));
+    pf_set_one(r);
     k = min_int(n - k, k);
     for (int i = 0; i < k; ++i)
     {
@@ -325,7 +327,7 @@ void pf_binomial(pf_rational_t *r, int n, int k)
 
 void extract_to(pf_rational_t *pf, mpz_t n)
 {
-    if (__gmpz_cmp_ui(n, 1) == 0)
+    if (__gmpz_cmpabs_ui(n, 1) <= 0)
     {
         return;
     }

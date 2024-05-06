@@ -9,8 +9,8 @@
         exit(1);                             \
     }
 
-static int max(int a, int b) { return a > b ? a : b; }
-static int min(int a, int b) { return a < b ? a : b; }
+static inline int max(int a, int b) { return a > b ? a : b; }
+static inline int min(int a, int b) { return a < b ? a : b; }
 
 void stagger_sum(mpz_t sum, pf_rational_t *cf, pf_rational_t *xs, int size)
 {
@@ -101,9 +101,10 @@ sqrt_rational_t pf_CG(int dj1, int dj2, int dj3, int dm1, int dm2, int dm3)
     const int j2mm2 = (dj2 - dm2) / 2;
     const int j3mm3 = (dj3 - dm3) / 2;
     const int j2pm2 = (dj2 + dm2) / 2;
-    pf_rational_t *A = pf_init_max(J + 1);
-    memset(A->data, 0, A->size * sizeof(int16_t));
-    pf_rational_t *t = pf_init_max(J + 1);
+    const int Jsize = upper_bound_primes_u16(J + 1);
+    pf_rational_t *A = pf_alloc(Jsize);
+    pf_set_one(A);
+    pf_rational_t *t = pf_alloc(Jsize);
     pf_binomial(A, dj1, jm2);
     pf_binomial(t, dj2, jm3);
     unsafe_pf_mul(A, t);
@@ -119,7 +120,7 @@ sqrt_rational_t pf_CG(int dj1, int dj2, int dj3, int dm1, int dm2, int dm3)
     const int high = min(jm3, min(j1mm1, j2pm2));
     const int max_jm = max(jm1, max(jm2, jm3));
     const int Bs_size = high - low + 1;
-    pf_rational_t *Bs = pf_init_max_vec(max_jm, Bs_size);
+    pf_rational_t *Bs = pf_alloc_max_vec(max_jm, Bs_size);
     pf_rational_t *pBs = Bs;
     for (int z = low; z <= high; ++z)
     {
@@ -130,7 +131,7 @@ sqrt_rational_t pf_CG(int dj1, int dj2, int dj3, int dm1, int dm2, int dm3)
         unsafe_pf_mul(pBs, t);
         pBs = pf_next(pBs);
     }
-    pf_rational_t *cf = pf_init_max(max_jm);
+    pf_rational_t *cf = pf_alloc_max(max_jm);
     mpz_t B;
     __gmpz_init(B);
     stagger_sum(B, cf, Bs, Bs_size);
@@ -144,12 +145,12 @@ sqrt_rational_t pf_CG(int dj1, int dj2, int dj3, int dm1, int dm2, int dm3)
         return ans;
     }
     extract_to(cf, B);
-    pf_rational_t *s = pf_init_max(J + 1);
-    pf_rational_t *r = pf_init_max(J + 1);
+    pf_rational_t *s = pf_alloc(Jsize);
+    pf_rational_t *r = pf_alloc(Jsize);
     pf_simplity(s, r, A);
     unsafe_pf_mul(s, cf);
 
-    pf_rational_t *g = pf_init_max(J + 1);
+    pf_rational_t *g = t;
     unsafe_pf_copy(g, r);
     unsafe_pf_inv(g);
     unsafe_pf_sgcd(g, s);
@@ -157,12 +158,11 @@ sqrt_rational_t pf_CG(int dj1, int dj2, int dj3, int dm1, int dm2, int dm3)
     unsafe_pf_mul(r, g);
     unsafe_pf_mul(r, g);
 
-    pf_numerator(ans.sn, s);
-    pf_numerator(ans.rn, r);
-    pf_denominator(ans.sd, s);
-    pf_denominator(ans.rd, r);
+    pf_num_den(ans.sn, ans.sd, s);
+    pf_num_den(ans.rn, ans.rd, r);
     __gmpz_mul(ans.sn, ans.sn, B);
-    __gmpz_mul_si(ans.sn, ans.sn, iphase(low));
+    if (isodd(low))
+        __gmpz_neg(ans.sn, ans.sn);
     __gmpz_clear(B);
     pf_free(A);
     pf_free(t);
@@ -170,7 +170,6 @@ sqrt_rational_t pf_CG(int dj1, int dj2, int dj3, int dm1, int dm2, int dm3)
     pf_free(cf);
     pf_free(s);
     pf_free(r);
-    pf_free(g);
     return ans;
 }
 

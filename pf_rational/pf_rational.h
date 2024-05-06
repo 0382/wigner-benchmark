@@ -9,7 +9,8 @@
 #define U16_PRIME_NUMBER 6542
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 extern uint16_t primes_u16[U16_PRIME_NUMBER];
@@ -25,20 +26,23 @@ typedef struct _pf_rational
 
 extern int pf_integer_number;
 extern pf_rational_t **pf_integers;
-// initialize pf_integers with the first n integers
+// initialize `pf_integers` with the first n integers
 void pf_init_integers(int n);
-// free pf_integers
+// free `pf_integers`
 void pf_free_integers();
 
 // create a list of `pf_rational_t` representation of integers from `1` to `n`.
 pf_rational_t **pf_range_u16(uint16_t n);
 
-// directly init pf_rational_t with uninitialized `size` length data.
-pf_rational_t *pf_init(int size);
-// init pf_rational_t with `size` length data, and repeat `num` times.
-pf_rational_t *pf_init_vec(int size, int num);
+// directly allocate pf_rational_t with uninitialized `size` length data.
+pf_rational_t *pf_alloc(int size);
+// allocate pf_rational_t with `size` length data, and repeat `num` times.
+pf_rational_t *pf_alloc_vec(int size, int num);
 
-// free pf_rational_t, this will also free `pf_init_vec`, since they are allocated together.
+// set as one of a pf_rational_t
+void pf_set_one(pf_rational_t *r);
+
+// free pf_rational_t, this will also free `pf_alloc_vec`, since they are allocated together.
 void pf_free(pf_rational_t *r);
 
 // pf_rational_t has no uniform size, so use `pf_next` to get the next pf_rational_t.
@@ -46,10 +50,10 @@ pf_rational_t *pf_next(pf_rational_t *r);
 
 // make a minimum `pf_rational_t` representation of integer `n`.
 pf_rational_t *pf_from_u16(uint16_t n);
-// init a `pf_rational_t`, which the maximum prime factor is less `max_integer`.
-pf_rational_t *pf_init_max(int max_integer);
-// same as `pf_init_max`, but repeat `num` times.
-pf_rational_t *pf_init_max_vec(int max_integer, int num);
+// allocate a `pf_rational_t`, which the maximum prime factor is less `max_integer`.
+pf_rational_t *pf_alloc_max(int max_integer);
+// same as `pf_alloc_max`, but repeat `num` times.
+pf_rational_t *pf_alloc_max_vec(int max_integer, int num);
 
 // get numerator of `pf_rational_t`.
 void pf_numerator(mpz_t n, pf_rational_t *r);
@@ -74,6 +78,7 @@ void unsafe_pf_lcm(pf_rational_t *r, pf_rational_t *a);
 
 void print_pf_rational(pf_rational_t *r);
 
+// extract prime factors into `r`, only extract the factors which `r` can hold
 void extract_to(pf_rational_t *r, mpz_t n);
 
 #ifdef __cplusplus
