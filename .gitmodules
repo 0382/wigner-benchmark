@@ -1,0 +1,3 @@
+[submodule "WignerSymbol"]
+	path = WignerSymbol
+	url = git@github.com:0382/WignerSymbol

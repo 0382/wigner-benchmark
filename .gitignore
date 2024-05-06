@@ -1,0 +1,9 @@
+.vscode/
+.xmake/
+build/
+linux_build/
+*.txt
+*.o
+*.a
+*.so
+*.exe
