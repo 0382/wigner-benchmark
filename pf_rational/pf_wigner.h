@@ -52,6 +52,12 @@ sqrt_rational_t pf_6j(int dj1, int dj2, int dj3, int dj4, int dj5, int dj6);
 sqrt_rational_t pf_Racah(int dj1, int dj2, int dj3, int dj4, int dj5, int dj6);
 sqrt_rational_t pf_9j(int dj1, int dj2, int dj3, int dj4, int dj5, int dj6, int dj7, int dj8, int dj9);
 
+double dpf_CG(int dj1, int dj2, int dj3, int dm1, int dm2, int dm3);
+double dpf_3j(int dj1, int dj2, int dj3, int dm1, int dm2, int dm3);
+double dpf_6j(int dj1, int dj2, int dj3, int dj4, int dj5, int dj6);
+double dpf_Racah(int dj1, int dj2, int dj3, int dj4, int dj5, int dj6);
+double dpf_9j(int dj1, int dj2, int dj3, int dj4, int dj5, int dj6, int dj7, int dj8, int dj9);
+
 #ifdef __cplusplus
 }
 #endif

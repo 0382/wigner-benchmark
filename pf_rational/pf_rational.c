@@ -43,6 +43,11 @@ int upper_bound_primes_u16(uint16_t n)
 
 void pf_init_integers(int n)
 {
+    CHECK(n > 0, "pf_init_integers: n <= 0");
+    if (pf_integer_number >= n)
+        return;
+    if (pf_integers != NULL)
+        pf_free_integers();
     pf_integer_number = n;
     pf_integers = pf_range_u16(pf_integer_number);
 }
@@ -55,17 +60,17 @@ void pf_free_integers()
 
 pf_rational_t **pf_range_u16(uint16_t n)
 {
-    CHECK(n > 0, "pf_range_u16(0) is undefined");
+    CHECK(n > 0, "pf_range_u16: n == 0");
     int mp_idx = upper_bound_primes_u16(n);
     int16_t *data = malloc(mp_idx * sizeof(int16_t));
-    CHECK(data != NULL, "could not allocate memory for pf_range_u16()");
+    CHECK(data != NULL, "pf_range_u16: malloc data failed");
     pf_rational_t **r = malloc(n * sizeof(pf_rational_t *));
-    CHECK(r != NULL, "could not allocate memory for pf_range_u16()");
+    CHECK(r != NULL, "pf_range_u16: malloc r failed ");
     // size_t size = n * (sizeof(pf_rational_t) + mp_idx * sizeof(int16_t));
     // this is not the exact approx function, but it works
     size_t size = n * sizeof(pf_rational_t) + floor(0.02 * pow(n, 1.5) * log(n) * log(n) + 6) * sizeof(int16_t);
     pf_rational_t *p0 = malloc(size);
-    CHECK(p0 != NULL, "could not allocate memory for pf_range_u16()");
+    CHECK(p0 != NULL, "pf_range_u16: malloc p0 failed");
     pf_rational_t *p = p0;
     for (int m = 1; m <= n; ++m)
     {
@@ -309,19 +314,6 @@ void unsafe_pf_lcm(pf_rational_t *r, pf_rational_t *a)
     for (int i = a->size; i < r->size; ++i)
     {
         r->data[i] = max_i16(r->data[i], 0);
-    }
-}
-
-void pf_binomial(pf_rational_t *r, int n, int k)
-{
-    CHECK((unsigned)n <= (unsigned)pf_integer_number, "pf_binomial() requires 0 <= n <= pf_integer_number");
-    CHECK((unsigned)k <= (unsigned)n, "pf_binomial() requires 0 <= k <= n");
-    pf_set_one(r);
-    k = min_int(n - k, k);
-    for (int i = 0; i < k; ++i)
-    {
-        unsafe_pf_mul(r, pf_integers[n - i - 1]);
-        unsafe_pf_div(r, pf_integers[i]);
     }
 }
 
