@@ -28,7 +28,7 @@ Calculate all possible Wigner 3j symbol up to Jmax.
 | :----------------: | :---: | :---: | :---: | :---: | :---: |
 |   wigner_3j(my)    | <1ms  |  6ms  | 20ms  | 64ms  | 144ms |
 | gsl_sf_coupling_3j | 14ms  | 103ms | 446ms | 1.52s | 4.26s |
-|  wig6jj(wigxjpf)   |  8ms  | 77ms  | 422ms | 1.55s | 4.72s |
+|  wig3jj(wigxjpf)   |  8ms  | 77ms  | 422ms | 1.55s | 4.72s |
 
 ### 6j
 
@@ -39,3 +39,13 @@ Calculate all possible Wigner 6j symbol up to Jmax.
 |   wigner_6j(my)    |  7ms  | 75ms  | 327ms | 1.48s | 3.97s |
 | gsl_sf_coupling_6j | 41ms  | 455ms | 2.43s | 9.84s | 32.4s |
 |  wig6jj(wigxjpf)   | 82ms  | 1.01s | 6.90s | 32.1s | 118s  |
+
+### 9j
+
+Calculate all possible Wigner 6j symbol up to Jmax. 
+
+|        Jmax        |   4   |   6   |   8   |  10   |
+| :----------------: | :---: | :---: | :---: | :---: |
+|   wigner_9j(my)    |  8ms  | 219ms | 2.11s | 15.9s |
+| gsl_sf_coupling_9j | 125ms | 2.39s | 28.8s | 198s  |
+|  wig9jj(wigxjpf)   | 78ms  | 2.47s | 31.4s | 276s  |
