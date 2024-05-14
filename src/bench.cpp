@@ -117,7 +117,7 @@ double bench_9j(int N, pfun9_t func, const char *name)
 
 int main()
 {
-    const int N = 20;
+    const int N = 24;
     wig_table_init(2 * N, 9);
     wig_temp_init(2 * N);
 

@@ -4,17 +4,30 @@ Benchmark my [WignerSymbol](https://github.com/0382/WignerSymbol) library and `G
 
 The error is evaluated using [wigxjpf](https://fy.chalmers.se/subatom/wigxjpf/) library, which can evaluate  Wigner 3j, 6j and 9j symbols accurately using prime factorisation and multi-word integer arithmetic.
 
+All of the following calculations include half integer arguments.
+
 ## Error
+
+See `src/error.cpp` for details.
 
 ### 3j
 
-![3j-error](data/bench_3j.svg)
+![3j-error](data/bench_3j_err.svg)
+![3j-rel-error](data/bench_3j_rel_err.svg)
 
 ### 6j
 
-![6j-error](data/bench_6j.svg)
+The `gsl_sf_coupling_6j` will throw error because `gamma` function overflow at `Jmax == 43`.
 
-The `gsl_sf_coupling_6j` will throw error because `gamma` function overflow at `Jmax == 86`.
+![6j-error](data/bench_6j_err.svg)
+
+![6j-rel-error](data/bench_6j_rel_err.svg)
+
+### 9j
+
+Because the 9j calculation is too slow, the error statistics are only performed on part of the possible arguments. See `src/error.cpp` for details. So the result maybe inaccuracy.
+
+![9j-error](data/bench_9j.svg)
 
 ## Performance
 
@@ -42,10 +55,10 @@ Calculate all possible Wigner 6j symbol up to Jmax.
 
 ### 9j
 
-Calculate all possible Wigner 6j symbol up to Jmax. 
+Calculate all possible Wigner 9j symbol up to Jmax. 
 
-|        Jmax        |   4   |   6   |   8   |  10   |
-| :----------------: | :---: | :---: | :---: | :---: |
-|   wigner_9j(my)    |  8ms  | 219ms | 2.11s | 15.9s |
-| gsl_sf_coupling_9j | 125ms | 2.39s | 28.8s | 198s  |
-|  wig9jj(wigxjpf)   | 78ms  | 2.47s | 31.4s | 276s  |
+|        Jmax        |   4   |   6   |   8   |  10   |  12   |
+| :----------------: | :---: | :---: | :---: | :---: | :---: |
+|   wigner_9j(my)    |  8ms  | 219ms | 2.11s | 15.9s | 91.9s |
+| gsl_sf_coupling_9j | 125ms | 2.39s | 28.8s | 198s  | 1225s |
+|  wig9jj(wigxjpf)   | 78ms  | 2.47s | 31.4s | 276s  | 1977s |
