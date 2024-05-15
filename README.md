@@ -25,9 +25,11 @@ The `gsl_sf_coupling_6j` will throw error because `gamma` function overflow at `
 
 ### 9j
 
-Because the 9j calculation is too slow, the error statistics are only performed on part of the possible arguments. See `src/error.cpp` for details. So the result maybe inaccuracy.
+Because the 9j calculation is too slow, the error statistics are only performed on part of the possible arguments. See `src/error.cpp` for details. So the following results are not guaranteed to cover the exact max error.
 
-![9j-error](data/bench_9j.svg)
+![9j-error](data/bench_9j_err.svg)
+
+![9j-rel-error](data/bench_9j_rel_err.svg)
 
 ## Performance
 

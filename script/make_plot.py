@@ -48,3 +48,6 @@ if __name__ == '__main__':
     colors = {'wigner_6j': 'green', 'gsl_6j': 'red'}
     data = load_data('data/bench_6j.txt', colors.keys())
     plot_data('data/bench_6j', data, colors)
+    colors = {'wigner_9j': 'green', 'gsl_9j': 'red'}
+    data = load_data('data/bench_9j.txt', colors.keys())
+    plot_data('data/bench_9j', data, colors)
